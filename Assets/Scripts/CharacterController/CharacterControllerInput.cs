@@ -1,32 +1,90 @@
+using System.Collections.Generic;
+using Helpers;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 public class CharacterControllerInput : MonoBehaviour
 {
+    #region references to camera and character used for movement
+
     //Get the main camera for orientation
     private Transform _camera;
+
     [SerializeField]
     private CharacterControllerPhysics _character; // A reference to the ThirdPersonCharacter on the object
 
-    public float MovementSpeed = 15;
+    #endregion
 
+    #region Target properties
+
+    //Target (to move towards?)
+    private GameObject Target { get; set; }
+
+    //All targets
+    private List<Vector3> AllTargets { get; set; }
+
+    public Vector3? VectorToTarget
+    {
+        get { return Target.transform.position - _character.transform.position; }
+    }
+
+    #endregion
+
+    #region Movement
+
+    [SerializeField] private float _movementSpeed = 5;
+    [SerializeField] private float _minMovementModifier = 1;
+    [SerializeField] private float _maxMovementModifier = 10;
+
+
+    [SerializeField]
+    private float DynamicMovementSpeed {
+        get { return (VectorToTarget.Value.magnitude * _movementSpeed).Clamp(_minMovementModifier, _maxMovementModifier); } }
 
     //Easy way to get vectors
-    public float HorizontalMovement { get; set; }
-    public float VerticalMovement { get; set; }
-    public Vector3 MovementVector
+    private float HorizontalMovement { get; set; }
+
+    private float VerticalMovement { get; set; }
+
+    private Vector3 MovementVector
 
     {
-        get
+        get { return VerticalMovement * _camera.up + HorizontalMovement * _camera.right; }
+    }
+
+    #endregion
+
+    private void Awake()
+    {
+        if (_character == null)
         {
-            return VerticalMovement * _camera.up + HorizontalMovement * _camera.right;
+            Debug.LogError("No character object was set. Destroying the CharacterControllerInput object.");
+            Destroy(gameObject);
         }
+
+        AllTargets = new List<Vector3>();
     }
 
     private void Start()
     {
         _camera = Camera.main.transform;
-//        _character = GetComponent<CharacterControllerPhysics>();
+    }
+
+    private void FixedUpdate()
+    {
+        //TODO: Put logic here. Overwrite below section.
+
+        #region Example code. Overwrite this section
+
+
+        if (Target != null)
+        {
+        var movement = VectorToTarget;
+//        _character.Move(movement.Value.normalized * Time.deltaTime * _movementSpeed); //use for static movement speed
+            _character.Move(movement.Value.normalized * Time.deltaTime * DynamicMovementSpeed); //use for "arrive" functionality
+        }
+
+        #endregion
+        ClearVectors();
     }
 
     private void MoveUp()
@@ -48,26 +106,15 @@ public class CharacterControllerInput : MonoBehaviour
     {
         HorizontalMovement = 1;
     }
-    private void Update()
-    {
-        //TODO: Put logic here. Over write below section.
-
-        #region Example code. Overwrite this section
-
-        MoveUp();
-        MoveRight();
-
-        #endregion
-
-        _character.Move(MovementVector * Time.deltaTime * MovementSpeed);
-        ClearVectors();
-
-    }
-
 
     private void ClearVectors()
     {
         HorizontalMovement = 0;
         VerticalMovement = 0;
+    }
+
+    public void AddTarget(GameObject target)
+    {
+        Target = target;
     }
 }
