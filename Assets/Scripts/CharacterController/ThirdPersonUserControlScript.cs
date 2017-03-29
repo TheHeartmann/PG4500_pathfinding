@@ -6,7 +6,7 @@ public class ThirdPersonUserControlScript : MonoBehaviour
 {
     private CharacterControllerPhysics _character; // A reference to the ThirdPersonCharacter on the object
     private Transform _cam; // A reference to the main camera in the scenes transform
-    private Vector3 _camForward; // The current forward direction of the camera
+    private Vector3 _camUp; // The current forward direction of the camera
     private Vector3 _move;
     private bool _jump; // the world-relative desired move direction, calculated from the camForward and user input.
 
@@ -52,8 +52,8 @@ public class ThirdPersonUserControlScript : MonoBehaviour
 
         // calculate move direction to pass to character
         // calculate camera relative direction to move:
-        _camForward = Vector3.Scale(_cam.up, new Vector3(1, 0, 1)).normalized; // using _cam.up rather than _cam.forward because top down
-        _move = vertical * _camForward + horizontal * _cam.right;
+        _camUp = Vector3.Scale(_cam.up, new Vector3(1, 0, 1)).normalized; // using _cam.up rather than _cam.forward because top down
+        _move = vertical * _camUp + horizontal * _cam.right;
 
 //        TODO: create button mapping for this (if necessary)
         // walk speed multiplier
