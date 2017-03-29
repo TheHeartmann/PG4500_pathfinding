@@ -8,6 +8,8 @@ public class CharacterControllerInput : MonoBehaviour
     [SerializeField]
     private CharacterControllerPhysics _character; // A reference to the ThirdPersonCharacter on the object
 
+    public float MovementSpeed = 15;
+
 
     //Easy way to get vectors
     public float HorizontalMovement { get; set; }
@@ -57,10 +59,11 @@ public class CharacterControllerInput : MonoBehaviour
 
         #endregion
 
-        _character.Move(MovementVector);
+        _character.Move(MovementVector * Time.deltaTime * MovementSpeed);
         ClearVectors();
 
     }
+
 
     private void ClearVectors()
     {
