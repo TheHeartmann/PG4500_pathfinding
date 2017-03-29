@@ -8,6 +8,8 @@ Modify CharacterControllerInput to your liking and activate the gameobject in th
 
 Mouse click somewhere in the maze places a target tagged target. Do with this as you wish.
 
+Nearly all variables of the player character can be controlled from the inspector, such as turn rate, movement speed, drag, etc, but this might require some experimentation.
+
 The character can also be controlled through wasd and arrow keys.
 
 For educational use only.
